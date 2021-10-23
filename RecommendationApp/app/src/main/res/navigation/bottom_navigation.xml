@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_navigation"
+    app:startDestination="@id/recommendation">
+
+
+    <fragment
+        android:id="@+id/history"
+        android:name="com.thesis.recommendationapp.history.HistoryFragment"
+        android:label="Recent recommendations"
+        tools:layout="@layout/history_fragment" />
+    <fragment
+        android:id="@+id/recommendation"
+        android:name="com.thesis.recommendationapp.recommendation.NewRecommendationFragment"
+        android:label="Recommendation engine"
+        tools:layout="@layout/new_recommendation_fragment" />
+    <fragment
+        android:id="@+id/resorts"
+        android:name="com.thesis.recommendationapp.resorts.ResortsFragment"
+        android:label="Resorts"
+        tools:layout="@layout/resorts_fragment" />
+</navigation>

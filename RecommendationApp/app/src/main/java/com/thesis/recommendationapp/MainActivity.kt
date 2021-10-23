@@ -2,40 +2,28 @@ package com.thesis.recommendationapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var button: Button
-    private lateinit var editText: EditText
-    private lateinit var result: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        button = findViewById(R.id.button)
-        editText = findViewById(R.id.editFeature)
-        result = findViewById(R.id.result)
+        val navView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
-        button.setOnClickListener { callRecommendationEngine() }
-    }
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.history, R.id.recommendation, R.id.resorts
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-    private fun callRecommendationEngine() {
-        val queue = Volley.newRequestQueue(this)
-        val url = "http://localhost:8080/recommendation/" + editText.text
-
-        val stringRequest = StringRequest(Request.Method.GET, url, { response ->
-            result.text = response
-        }, {
-            result.text = "error"
-        })
-
-        queue.add(stringRequest)
     }
 }
