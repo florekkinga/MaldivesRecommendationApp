@@ -43,7 +43,8 @@ class ResultFragment : Fragment() {
         private fun callRecommendationEngine() {
         val queue = Volley.newRequestQueue(activity)
         // localhost for emulator -> 10.0.2.2
-        val url = "http://10.0.2.2:8080/recommendation/" + editText.text
+//        val url = "http://10.0.2.2:8080/recommendation/" + editText.text
+        val url = "http://10.0.2.2:8080/resorts/"
 
         val stringRequest = StringRequest(Request.Method.GET, url, { response ->
             result.text = response

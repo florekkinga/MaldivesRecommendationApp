@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/multiselectQuestionFragment"
         android:name="com.thesis.recommendationapp.survey.MultiselectQuestionFragment"
-        android:label="Question 1 out of 20"
+        android:label="Survey"
         tools:layout="@layout/fragment_multiselect_question" >
         <action
             android:id="@+id/action_multiselectQuestionFragment_to_resultFragment"
