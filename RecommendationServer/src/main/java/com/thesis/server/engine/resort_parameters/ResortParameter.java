@@ -1,6 +1,6 @@
-package com.thesis.server.engine.parameters;
+package com.thesis.server.engine.resort_parameters;
 
-abstract class Parameter {
+abstract class ResortParameter {
     private Double importance;
 
     public Double getImportance() {

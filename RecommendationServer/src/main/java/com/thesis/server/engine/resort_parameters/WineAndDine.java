@@ -1,8 +1,8 @@
-package com.thesis.server.engine.parameters;
+package com.thesis.server.engine.resort_parameters;
 
 import java.util.List;
 
-public class StarRating extends Parameter {
+public class WineAndDine extends ResortParameter {
     private List<String> options;
 
     public List<String> getOptions() {

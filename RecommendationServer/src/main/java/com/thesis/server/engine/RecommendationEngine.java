@@ -15,7 +15,8 @@ public class RecommendationEngine {
         this.repository = repository;
     }
 
-    public List<String> getRecommendation(List<String> category) {
-        return repository.getResortsNames(category);
+    public List<String> getRecommendation(SurveyAnswers answers) {
+        String query = repository.buildQueryForResorts(answers.getStarRating().getOptions(), "StarRating", "rating");
+        return repository.getResorts(query);
     }
 }

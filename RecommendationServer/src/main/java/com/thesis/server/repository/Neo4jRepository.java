@@ -18,22 +18,48 @@ public class Neo4jRepository {
         this.driver = driver;
     }
 
-    public List<String> getResortsNames(List<String> category) {
-        String prefix = "";
-        StringBuilder category_options = new StringBuilder("[");
-        for(String c: category){
-            category_options.append(prefix);
-            prefix = ",";
-            category_options.append(c);
-        }
-        category_options.append("]");
+    public List<String> getResorts(String queryResorts) {
 
         try (Session session = driver.session()) {
-            return session.run("MATCH (m:Resort)--(r:StarRating) WHERE r.rating IN " + category_options + " RETURN m")
+            return session.run(queryResorts)
                     .list(r -> r.get("m").asNode().get("name").asString());
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ArrayList<String>();
         }
+    }
+
+    public String buildQueryForResorts(List<String> options, String nodeType, String nodeAttribute) {
+        return "MATCH (m:Resort)--(n:" +
+                nodeType +
+                ") WHERE n." +
+                nodeAttribute +
+                " IN " +
+                buildOptions(options) +
+                " RETURN m";
+    }
+
+    public String buildQueryForResorts(String option, String nodeType, String relationshipName, String relationshipAttribute) {
+        return "MATCH (m:Resort)-[r:" +
+                relationshipName +
+                "]-(n:" +
+                nodeType +
+                ") WHERE r." +
+                relationshipAttribute +
+                " < " +
+                option +
+                " RETURN m";
+    }
+
+    private String buildOptions(List<String> options) {
+        String prefix = "";
+        StringBuilder stringOptions = new StringBuilder("[");
+        for (String c : options) {
+            stringOptions.append(prefix);
+            prefix = ",";
+            stringOptions.append(c);
+        }
+        stringOptions.append("]");
+        return stringOptions.toString();
     }
 }

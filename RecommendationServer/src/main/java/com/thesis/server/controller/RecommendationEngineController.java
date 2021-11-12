@@ -24,11 +24,6 @@ public class RecommendationEngineController {
     @PostMapping(path = "/recommendation", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<String> getResortsNames(@RequestBody SurveyAnswers answers) {
-//        return engine.getRecommendation(category);
-        System.out.println(answers.getStarRating().getImportance());
-        System.out.println(answers.getStarRating().getOptions().toString());
-        System.out.println(answers.getTransfer().getImportance());
-        System.out.println(answers.getTransfer().getOptions().toString());
-        return answers.getStarRating().getOptions();
+        return engine.getRecommendation(answers);
     }
 }
