@@ -8,6 +8,6 @@
     android:orientation="vertical"
     tools:context=".resorts.ResortsFragment">
 
-    <include layout="@layout/resort"/>
+    <include layout="@layout/resort" />
 
 </LinearLayout>

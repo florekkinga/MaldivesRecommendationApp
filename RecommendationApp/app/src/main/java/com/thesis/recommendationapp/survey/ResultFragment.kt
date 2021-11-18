@@ -9,24 +9,28 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.android.volley.Request
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.thesis.recommendationapp.R
+import org.json.JSONArray
+import org.json.JSONObject
 
 class ResultFragment : Fragment() {
     private lateinit var callRecommendationApiButton: Button
-    private lateinit var editText: EditText
     private lateinit var result: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val viewModel: SurveyViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+//        viewModel = ViewModelProvider(this).get(SurveyViewModel::class.java)
         (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         return inflater.inflate(R.layout.fragment_result, container, false)
     }
@@ -34,25 +38,27 @@ class ResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         callRecommendationApiButton = view.findViewById(R.id.callapi)
-        editText = view.findViewById(R.id.editfeature)
         result = view.findViewById(R.id.result)
 
         callRecommendationApiButton.setOnClickListener { callRecommendationEngine() }
     }
 
-        private fun callRecommendationEngine() {
+    private fun callRecommendationEngine() {
         val queue = Volley.newRequestQueue(activity)
-        // localhost for emulator -> 10.0.2.2
-//        val url = "http://10.0.2.2:8080/recommendation/" + editText.text
-        val url = "http://10.0.2.2:8080/resorts/"
+        val url = "http://10.0.2.2:8080/recommendation/" // localhost for emulator -> 10.0.2.2
+        val jsonArray =
+            JSONArray("""[{"starRating":{"options":["4", "6"], "importance":"6.0"}}, {"transfer":{"options":["a","b"],"importance":"5.0"}},{"accommodation":{"options":["c","d"],"importance":"5.0"}},{"transferPrice":{"price":"5","importance":"5.0"}},{"transferTime":{"time":10,"importance":"5.0"}}]""")
+//        jsonObject.put("aaaa", 5)
 
-        val stringRequest = StringRequest(Request.Method.GET, url, { response ->
-            result.text = response
-        }, { error ->
-            result.text = error.toString()
-        })
+        val jsonArrayRequest =
+            JsonArrayRequest(Request.Method.POST, url, jsonArray, { response ->
+//                result.text = response.toString()
+            }, { error ->
+//                result.text = error.toString()
+            })
 
-        queue.add(stringRequest)
+        queue.add(jsonArrayRequest)
+        result.text = viewModel.getJSON()
     }
 
     companion object {

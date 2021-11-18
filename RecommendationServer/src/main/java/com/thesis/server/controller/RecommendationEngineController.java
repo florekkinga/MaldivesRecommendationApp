@@ -21,7 +21,7 @@ public class RecommendationEngineController {
         this.engine = engine;
     }
 
-    @PostMapping(path = "/recommendation", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/recommendation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<String> getResortsNames(@RequestBody SurveyAnswers answers) {
         return engine.getRecommendation(answers);
