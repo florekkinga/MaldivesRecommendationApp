@@ -30,7 +30,6 @@ class ResultFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        viewModel = ViewModelProvider(this).get(SurveyViewModel::class.java)
         (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         return inflater.inflate(R.layout.fragment_result, container, false)
     }
@@ -46,19 +45,17 @@ class ResultFragment : Fragment() {
     private fun callRecommendationEngine() {
         val queue = Volley.newRequestQueue(activity)
         val url = "http://10.0.2.2:8080/recommendation/" // localhost for emulator -> 10.0.2.2
-        val jsonArray =
-            JSONArray("""[{"starRating":{"options":["4", "6"], "importance":"6.0"}}, {"transfer":{"options":["a","b"],"importance":"5.0"}},{"accommodation":{"options":["c","d"],"importance":"5.0"}},{"transferPrice":{"price":"5","importance":"5.0"}},{"transferTime":{"time":10,"importance":"5.0"}}]""")
-//        jsonObject.put("aaaa", 5)
+        val jsonObject =
+            JSONObject("""{"starRating":{"options":["4", "6"], "importance":"6.0"}}, {"transfer":{"options":["a","b"],"importance":"5.0"}},{"accommodation":{"options":["c","d"],"importance":"5.0"}},{"transferPrice":{"price":"5","importance":"5.0"}},{"transferTime":{"time":10,"importance":"5.0"}}""")
 
-        val jsonArrayRequest =
-            JsonArrayRequest(Request.Method.POST, url, jsonArray, { response ->
-//                result.text = response.toString()
+        val jsonObjectRequest =
+            JsonObjectRequest(Request.Method.POST, url, jsonObject, { response ->
+                result.text = response.toString()
             }, { error ->
-//                result.text = error.toString()
+                result.text = error.toString()
             })
+        queue.add(jsonObjectRequest)
 
-        queue.add(jsonArrayRequest)
-        result.text = viewModel.getJSON()
     }
 
     companion object {

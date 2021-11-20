@@ -2,6 +2,7 @@ package com.thesis.recommendationapp.survey
 import android.util.Log
 import android.view.View
 import android.widget.CheckBox
+import android.widget.RadioButton
 import android.widget.RatingBar
 import androidx.lifecycle.ViewModel
 import androidx.navigation.findNavController
@@ -9,12 +10,39 @@ import com.thesis.recommendationapp.R
 
 class SurveyViewModel : ViewModel() {
     private val questions : List<Question> = listOf(
-        Question("Jakie kategorie resortu najbardziej Cię interesują?", listOf("5 gwiazdek", "4 gwiazdki"), "starRating", listOf("5", "4")),
-        Question("Jakie rodzaje transferu z Male na docelową wyspę bierzesz pod uwagę?", listOf("Wodolot", "Szybka łódka", "Inny/ mieszany transfer"), "transfer", listOf("seaPlane", "speedBoat", "mixedTransfer")),
-        Question("Wybierz preferowaną cenę transferu z Male na docelową wyspę:", listOf("<150$", "<300$", "<500$"), "transferPrice", listOf("150", "300", "500")),
-        Question("Wybierz preferowany czas transferu z Male na docelową wyspę (dla 1 osoby):", listOf("<30 min", "<60 min", "<90 min"), "transferTime", listOf("30", "60", "90")),
-        Question("Jakie rodzaje zakwaterowania bierzesz pod uwagę?", listOf("Pokój", "Bungalow na plaży", "Bungalow na plaży z basenem"), "accommodation", listOf("room", "beachBungalow", "beachBungalowPool")),
-        Question("Wybierz preferowaną cenę zakwaterowania (dla 2 osób/ 1 noc):", listOf("<600$", "<1300$", "<2000$"), "accomodationPrice", listOf("600", "1300", "2000"))
+        Question(
+            "Select your preferred resort categories:", listOf("5 star", "4 star"),
+            "starRating", listOf("5", "4"), OptionsButtonType.CHECKBOX),
+        Question(
+            "Select your preferred type of transfer from Male to the resort island:",
+            listOf("Sea plane", "Speed boat", "Mixed transfer"), "transfer",
+            listOf("seaPlane", "speedBoat", "mixedTransfer"), OptionsButtonType.CHECKBOX),
+        Question(
+            "Choose the maximum transfer price (1 person):", listOf("150$", "300$", "500$"),
+            "transferPrice", listOf("150", "300", "500"), OptionsButtonType.RADIO_BUTTON,
+            "price"),
+        Question(
+            "Choose the maximum transfer time:", listOf("30 minutes", "60 minutes", "90 minutes"),
+            "transferTime", listOf("30", "60", "90"), OptionsButtonType.RADIO_BUTTON, "time"),
+        Question(
+            "Select your preferred type of accommodation:", listOf("Room", "Beach bungalow", "Beach bungalow with pool",
+            "Water bungalow", "Water bungalow with pool", "Water suite", "Water suite with pool"), "accommodation",
+            listOf("room", "beachBungalow", "beachBungalowPool", "waterBungalow", "waterBungalowPool", "waterSuite", "waterSuitePool"), OptionsButtonType.CHECKBOX),
+        Question(
+            "Select your preferred type of board basis:", listOf("Half board", "Full board", "All inclusive"),
+            "boardBasis", listOf("halfBoard", "fullBoard", "allInclusive"), OptionsButtonType.CHECKBOX),
+        Question(
+            "Select the maximum accommodation price (2 people/ 1 night):", listOf("600$", "1300$", "2000$"),
+            "accommodationPrice", listOf("600", "1300", "2000"), OptionsButtonType.RADIO_BUTTON, "price"),
+        Question("Select water sports activities that you would like to have available at the resort:",
+            listOf("Scuba diving", "Catamaran sailing", "Kite surfing", "Wind surfing", "Snorkeling", "Jet ski", "Motorized sports", "Parasailing", "Fishing", "Kayak", "Stand-up Paddling", "Surfing"),
+            "waterSports", listOf("scubaDiving", "sailing", "kiteSurfing", "windSurfing",
+                "snorkeling", "jetSki", "motorizedSports", "parasailing", "fishing", "kayak", "standupPaddling", "surfing"), OptionsButtonType.CHECKBOX),
+        Question("Select types of wine and dine facilities that you would like to have available at the resort:",
+            listOf("Underwater restaurant", "Buffet", "à la carte", "Bar", "Pool bar"), "wineAndDine",
+            listOf("underwater", "buffet", "alacarte", "bar", "poolBar"), OptionsButtonType.CHECKBOX),
+        Question("Select fitness activities that you would like to have available at the resort:", listOf("Beach volley", "Tennis", "Gym", "Table tennis"),
+            "fitness", listOf("beachVolley", "tennis", "gym", "tableTennis"), OptionsButtonType.CHECKBOX)
     )
     private var currQuestionNumber = 0
 
@@ -38,21 +66,44 @@ class SurveyViewModel : ViewModel() {
         return currQuestionNumber
     }
 
+    fun getTypeOfButtonForOptions() : OptionsButtonType {
+        return questions[currQuestionNumber].buttonType
+    }
+
     fun pressNext(view: View) : Boolean {
         val checkBoxes : List<CheckBox> = listOf(
             view.findViewById(R.id.checkBox1),
             view.findViewById(R.id.checkBox2),
-            view.findViewById(R.id.checkBox3)
+            view.findViewById(R.id.checkBox3),
+            view.findViewById(R.id.checkBox4),
+            view.findViewById(R.id.checkBox5),
+            view.findViewById(R.id.checkBox6),
+            view.findViewById(R.id.checkBox7),
+            view.findViewById(R.id.checkBox8)
+
+        )
+        val radioButtons : List<RadioButton> = listOf(
+            view.findViewById(R.id.radioButton1),
+            view.findViewById(R.id.radioButton2),
+            view.findViewById(R.id.radioButton3),
+            view.findViewById(R.id.radioButton4)
         )
         val ratingBar : RatingBar = view.findViewById(R.id.ratingBar)
 
         questions[currQuestionNumber].importance = ratingBar.rating.toDouble()
         questions[currQuestionNumber].answers.forEachIndexed { i, answer ->
-            if(checkBoxes[i].isChecked) {
-                Log.v("survey", questions[currQuestionNumber].jsonFieldName)
-                questions[currQuestionNumber].answers[i] = true
-                Log.v("array-survey", questions[currQuestionNumber].answers[i].toString())
-                Log.v("survey-json", questions[currQuestionNumber].generateJSON())
+            if(getTypeOfButtonForOptions() == OptionsButtonType.CHECKBOX) {
+                if (checkBoxes[i].isChecked) {
+                    Log.v("survey", questions[currQuestionNumber].jsonFieldName)
+                    questions[currQuestionNumber].answers[i] = true
+                    Log.v("array-survey", questions[currQuestionNumber].answers[i].toString())
+                    Log.v("survey-json", questions[currQuestionNumber].generateJSON())
+                }
+            }
+            else {
+                if(radioButtons[i].isChecked) {
+                    questions[currQuestionNumber].answers[i] = true
+                }
             }
         }
 
