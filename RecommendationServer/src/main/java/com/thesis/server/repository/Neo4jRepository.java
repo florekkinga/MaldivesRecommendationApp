@@ -99,6 +99,13 @@ public class Neo4jRepository {
         String fitnessOptions = buildOptions(answers.getFitness().getOptions(), "'");
         Double fitnessFactor = answers.getFitness().getImportance() / answers.getFitness().getOptions().size();
 
+        Double importanceSum = answers.getStarRating().getImportance() +
+                answers.getTransfer().getImportance() + answers.getTransferPrice().getImportance() +
+                answers.getTransferTime().getImportance() + answers.getAccommodation().getImportance() +
+                answers.getAccommodationPrice().getImportance() + answers.getBoardBasis().getImportance() +
+                answers.getWaterSports().getImportance() + answers.getWineAndDine().getImportance() +
+                answers.getFitness().getImportance();
+
 
         String query = String.format(
                 "MATCH (r:Resort)-[:RATING]-(sr:StarRating)\n" +
@@ -152,7 +159,7 @@ public class Neo4jRepository {
                 "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
                 "\n" +
                 "UNWIND resorts as resort\n" +
-                "RETURN resort.name as resort, sum(resort.score) as score ORDER BY score DESC",
+                "RETURN resort.name as resort, sum(resort.score) / %s * 100 as score ORDER BY score DESC",
                 starRatingOptions, starRatingFactor,
                 transferOptions, transferOptionsFactor,
                 transferTime, transferTimeImportance,
@@ -162,7 +169,8 @@ public class Neo4jRepository {
                 boardOptions, boardImportance,
                 waterSportsOptions, waterSportsFactor,
                 wineAndDineOptions, wineAndDineFactor,
-                fitnessOptions, fitnessFactor);
+                fitnessOptions, fitnessFactor,
+                importanceSum);
 
         System.out.println(query);
 
