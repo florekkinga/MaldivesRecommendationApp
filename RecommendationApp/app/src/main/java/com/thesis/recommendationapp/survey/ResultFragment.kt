@@ -1,6 +1,7 @@
 package com.thesis.recommendationapp.survey
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ class ResultFragment : Fragment() {
     private fun callRecommendationEngine() {
         val queue = Volley.newRequestQueue(activity)
         val url = "http://10.0.2.2:8080/recommendation/" // localhost for emulator -> 10.0.2.2
+        Log.v("survey-json", viewModel.getJSON())
         val jsonObject =
             JSONObject("""{"starRating":{"options":["4", "6"], "importance":"6.0"}}, {"transfer":{"options":["a","b"],"importance":"5.0"}},{"accommodation":{"options":["c","d"],"importance":"5.0"}},{"transferPrice":{"price":"5","importance":"5.0"}},{"transferTime":{"time":10,"importance":"5.0"}}""")
 

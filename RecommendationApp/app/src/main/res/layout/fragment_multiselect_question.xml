@@ -109,6 +109,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4 gwiazdkowy resort" />
+                <CheckBox
+                    android:id="@+id/checkBox9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 gwiazdkowy resort" />
+                <CheckBox
+                    android:id="@+id/checkBox10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 gwiazdkowy resort" />
+                <CheckBox
+                    android:id="@+id/checkBox11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 gwiazdkowy resort" />
+                <CheckBox
+                    android:id="@+id/checkBox12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 gwiazdkowy resort" />
+                <CheckBox
+                    android:id="@+id/checkBox13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 gwiazdkowy resort" />
 
                 <RadioGroup
                     android:id="@+id/radioGroup"

@@ -9,7 +9,7 @@ public class SurveyAnswers {
     private TransferTime transferTime;
     private Accommodation accommodation;
     private AccommodationPrice accommodationPrice;
-    private Catering catering;
+    private BoardBasis boardBasis;
     private WineAndDine wineAndDine;
     private WaterSports waterSports;
     private Fitness fitness;
@@ -38,8 +38,8 @@ public class SurveyAnswers {
         return accommodationPrice;
     }
 
-    public Catering getCatering() {
-        return catering;
+    public BoardBasis getBoardBasis() {
+        return boardBasis;
     }
 
     public WineAndDine getWineAndDine() {

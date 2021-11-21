@@ -17,7 +17,7 @@ class Question(val content: String, val options: List<String>, val jsonFieldName
             if(element){
                 json += separator
                 separator = ","
-                json += "\"" + optionsJson[i] + "\""
+                json += "\"" + options[i] + "\""
             }
         }
         if(buttonType == OptionsButtonType.CHECKBOX){

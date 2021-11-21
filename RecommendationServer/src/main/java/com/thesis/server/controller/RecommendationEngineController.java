@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 public class RecommendationEngineController {
@@ -23,7 +23,13 @@ public class RecommendationEngineController {
 
     @PostMapping(path = "/recommendation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> getResortsNames(@RequestBody SurveyAnswers answers) {
-        return engine.getRecommendation(answers);
+    public Map<String, String> getResortsNames(@RequestBody SurveyAnswers answers) {
+
+//        List<String> resorts = engine.getRecommendation(answers);
+//        Map<String, String> response = new HashMap<>();
+//        for(String r : resorts){
+//            response.put(r, "0%");
+//        }
+        return engine.test(answers);
     }
 }

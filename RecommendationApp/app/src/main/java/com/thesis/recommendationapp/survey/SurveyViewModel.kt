@@ -79,7 +79,12 @@ class SurveyViewModel : ViewModel() {
             view.findViewById(R.id.checkBox5),
             view.findViewById(R.id.checkBox6),
             view.findViewById(R.id.checkBox7),
-            view.findViewById(R.id.checkBox8)
+            view.findViewById(R.id.checkBox8),
+            view.findViewById(R.id.checkBox9),
+            view.findViewById(R.id.checkBox10),
+            view.findViewById(R.id.checkBox11),
+            view.findViewById(R.id.checkBox12),
+            view.findViewById(R.id.checkBox13)
 
         )
         val radioButtons : List<RadioButton> = listOf(
@@ -137,6 +142,7 @@ class SurveyViewModel : ViewModel() {
             json += question.generateJSON()
         }
         json += "}"
+        Log.v("survey-json", json)
         return json
     }
 
