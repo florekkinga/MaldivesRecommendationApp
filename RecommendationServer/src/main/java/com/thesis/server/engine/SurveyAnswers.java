@@ -53,4 +53,12 @@ public class SurveyAnswers {
     public Fitness getFitness() {
         return fitness;
     }
+
+    public Double getSumOfImportance() {
+        return getStarRating().getImportance() + getTransfer().getImportance() + getTransferPrice().getImportance() +
+                getTransferTime().getImportance() + getAccommodation().getImportance() +
+                getAccommodationPrice().getImportance() + getBoardBasis().getImportance() +
+                getWaterSports().getImportance() + getWineAndDine().getImportance() +
+                getFitness().getImportance();
+    }
 }

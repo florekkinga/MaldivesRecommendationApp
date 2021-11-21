@@ -2,12 +2,10 @@ package com.thesis.server.controller;
 
 import com.thesis.server.engine.RecommendationEngine;
 import com.thesis.server.engine.SurveyAnswers;
+import com.thesis.server.repository.ResortDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -23,13 +21,19 @@ public class RecommendationEngineController {
 
     @PostMapping(path = "/recommendation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, String> getResortsNames(@RequestBody SurveyAnswers answers) {
+    public Map<String, String> getSurveyRecommendation(@RequestBody SurveyAnswers answers) {
+        return engine.getSurveyRecommendation(answers);
+    }
 
-//        List<String> resorts = engine.getRecommendation(answers);
-//        Map<String, String> response = new HashMap<>();
-//        for(String r : resorts){
-//            response.put(r, "0%");
-//        }
-        return engine.test(answers);
+    @PostMapping(path = "/similarity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, ResortDetails> getSimilarityRecommendation(@RequestBody String name) {
+        return engine.getSimilarityRecommendation(name);
+    }
+
+    @GetMapping(path = "/resorts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, ResortDetails> getAllResorts() {
+        return engine.getResorts();
     }
 }

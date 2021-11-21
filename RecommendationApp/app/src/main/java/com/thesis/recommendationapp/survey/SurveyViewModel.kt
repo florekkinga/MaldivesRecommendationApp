@@ -16,7 +16,7 @@ class SurveyViewModel : ViewModel() {
         Question(
             "Select your preferred type of transfer from Male to the resort island:",
             listOf("Sea plane", "Speed boat", "Mixed transfer"), "transfer",
-            listOf("seaPlane", "speedBoat", "mixedTransfer"), OptionsButtonType.CHECKBOX),
+            listOf("Sea Plane", "Speed Boat", "Mixed Transfer"), OptionsButtonType.CHECKBOX),
         Question(
             "Choose the maximum transfer price (1 person):", listOf("150$", "300$", "500$"),
             "transferPrice", listOf("150", "300", "500"), OptionsButtonType.RADIO_BUTTON,
@@ -27,7 +27,8 @@ class SurveyViewModel : ViewModel() {
         Question(
             "Select your preferred type of accommodation:", listOf("Room", "Beach bungalow", "Beach bungalow with pool",
             "Water bungalow", "Water bungalow with pool", "Water suite", "Water suite with pool"), "accommodation",
-            listOf("room", "beachBungalow", "beachBungalowPool", "waterBungalow", "waterBungalowPool", "waterSuite", "waterSuitePool"), OptionsButtonType.CHECKBOX),
+            listOf("Room", "Beach Bungalow", "Beach Bungalow with Pool", "Water Bungalow", "Water Bungalow with Pool",
+                "Water Suite", "Water Suite with Pool"), OptionsButtonType.CHECKBOX),
         Question(
             "Select your preferred type of board basis:", listOf("Half board", "Full board", "All inclusive"),
             "boardBasis", listOf("halfBoard", "fullBoard", "allInclusive"), OptionsButtonType.CHECKBOX),
@@ -36,13 +37,13 @@ class SurveyViewModel : ViewModel() {
             "accommodationPrice", listOf("600", "1300", "2000"), OptionsButtonType.RADIO_BUTTON, "price"),
         Question("Select water sports activities that you would like to have available at the resort:",
             listOf("Scuba diving", "Catamaran sailing", "Kite surfing", "Wind surfing", "Snorkeling", "Jet ski", "Motorized sports", "Parasailing", "Fishing", "Kayak", "Stand-up Paddling", "Surfing"),
-            "waterSports", listOf("scubaDiving", "sailing", "kiteSurfing", "windSurfing",
-                "snorkeling", "jetSki", "motorizedSports", "parasailing", "fishing", "kayak", "standupPaddling", "surfing"), OptionsButtonType.CHECKBOX),
+            "waterSports", listOf("Scuba Diving", "Catamaran Sailing", "Kite Surfing", "Wind Surfing", "Snorkeling", "Jet Ski",
+                "Motorized Sports", "Parasailing", "Fishing", "Kayak", "Standup Paddling", "Surfing"), OptionsButtonType.CHECKBOX),
         Question("Select types of wine and dine facilities that you would like to have available at the resort:",
-            listOf("Underwater restaurant", "Buffet", "à la carte", "Bar", "Pool bar"), "wineAndDine",
-            listOf("underwater", "buffet", "alacarte", "bar", "poolBar"), OptionsButtonType.CHECKBOX),
+            listOf("Underwater restaurant", "Buffet restaurant", "À la carte restaurant", "Bar", "Pool bar"), "wineAndDine",
+            listOf("Underwater Restaurant", "Buffet Restaurant", "À la carte Restaurant", "Bar", "Pool bar"), OptionsButtonType.CHECKBOX),
         Question("Select fitness activities that you would like to have available at the resort:", listOf("Beach volley", "Tennis", "Gym", "Table tennis"),
-            "fitness", listOf("beachVolley", "tennis", "gym", "tableTennis"), OptionsButtonType.CHECKBOX)
+            "fitness", listOf("Beach Volley", "Tennis", "Gym", "Table Tennis"), OptionsButtonType.CHECKBOX)
     )
     private var currQuestionNumber = 0
 
