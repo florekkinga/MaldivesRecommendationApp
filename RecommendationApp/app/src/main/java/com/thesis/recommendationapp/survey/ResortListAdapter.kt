@@ -1,11 +1,13 @@
 package com.thesis.recommendationapp.survey
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.thesis.recommendationapp.R
 
@@ -28,9 +30,17 @@ class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val resort = dataSet[position]
         holder.resortNameTextView.text = resort.name
-        holder.resortDetailsTextView.text = resort.address
+        if(resort.address != ""){
+            holder.resortDetailsTextView.text = resort.address
+        }
         val score = resort.score.toString() + resort.suffix
         holder.resortScoreTextView.text = score
+        if(resort.suffix == "%" && resort.score <= 80.0){
+            holder.resortScoreTextView.setTextColor(Color.parseColor("#FFC107"))
+            if(resort.score <= 60.0){
+                holder.resortScoreTextView.setTextColor(Color.parseColor("#FF5722"))
+            }
+        }
         holder.bookingUrlButton.setOnClickListener {  }
         holder.resortDetailsButton.setOnClickListener {  }
     }

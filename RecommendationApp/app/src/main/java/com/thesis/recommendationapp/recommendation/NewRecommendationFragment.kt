@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.thesis.recommendationapp.R
 import com.thesis.recommendationapp.SurveyActivity
+import com.thesis.recommendationapp.similarity.SelectResort
 
 class NewRecommendationFragment : Fragment() {
 
@@ -39,7 +40,8 @@ class NewRecommendationFragment : Fragment() {
     }
 
     private fun openSelectResortActivity() {
-        TODO("Not yet implemented")
+        val intent = Intent(activity, SelectResort::class.java).apply {}
+        startActivity(intent)
     }
 
     private fun openSurveyActivity() {
