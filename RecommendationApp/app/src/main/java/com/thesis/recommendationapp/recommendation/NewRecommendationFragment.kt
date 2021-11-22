@@ -19,6 +19,7 @@ class NewRecommendationFragment : Fragment() {
 
     private lateinit var viewModel: NewRecommendationViewModel
     private lateinit var startRecommendationEngineButton: Button
+    private lateinit var startSimilarityEngineButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +33,13 @@ class NewRecommendationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startRecommendationEngineButton = view.findViewById(R.id.startRecommendationEngineButton)
+        startSimilarityEngineButton = view.findViewById(R.id.startSimilarityEngineButton)
         startRecommendationEngineButton.setOnClickListener { openSurveyActivity() }
+        startSimilarityEngineButton.setOnClickListener { openSelectResortActivity() }
+    }
+
+    private fun openSelectResortActivity() {
+        TODO("Not yet implemented")
     }
 
     private fun openSurveyActivity() {

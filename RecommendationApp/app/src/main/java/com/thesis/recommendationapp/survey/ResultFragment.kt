@@ -1,6 +1,7 @@
 package com.thesis.recommendationapp.survey
 
 import android.content.Context
+import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
@@ -33,15 +35,15 @@ class ResultFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         val view = inflater.inflate(R.layout.fragment_result, container, false)
         recyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
-        adapter = ResortListAdapter(arrayOf(), view.context)
+        val layoutManager = LinearLayoutManager(view.context)
+        recyclerView.layoutManager = layoutManager
+        adapter = ResortListAdapter(arrayOf(),
+            view.context)
         recyclerView.adapter = adapter
+        val divider = DividerItemDecoration(recyclerView.context, layoutManager.orientation)
+        recyclerView.addItemDecoration(divider)
         callRecommendationEngine(view.context)
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun callRecommendationEngine(context: Context) {
@@ -52,6 +54,8 @@ class ResultFragment : Fragment() {
         val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, jsonObject,
             { response ->
                 loadData(response)
+                adapter.dataSet = dataSet
+                adapter.notifyDataSetChanged()
             },
             { error ->
                 Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
@@ -66,9 +70,11 @@ class ResultFragment : Fragment() {
         val keys = response.keys()
         while(keys.hasNext()){
             val key : String = keys.next()
-            tmpData.add(ResortDetails(key, "", "", response.getString(key)))
+            tmpData.add(ResortDetails(key, "", "", response.getDouble(key)))
         }
+        tmpData.sortByDescending { it.score }
         this.dataSet += tmpData
+        Log.v("dataset", dataSet.toString())
     }
 
     companion object {

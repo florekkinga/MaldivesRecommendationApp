@@ -13,6 +13,7 @@ class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: 
     RecyclerView.Adapter<ResortListAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val resortNameTextView: TextView = view.findViewById(R.id.resortName)
+        val resortDetailsTextView: TextView = view.findViewById(R.id.resortDetails)
         val resortScoreTextView: TextView = view.findViewById(R.id.score)
         val resortDetailsButton: Button = view.findViewById(R.id.buttonDetails)
         val bookingUrlButton: Button = view.findViewById(R.id.buttonBooking)
@@ -27,7 +28,9 @@ class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val resort = dataSet[position]
         holder.resortNameTextView.text = resort.name
-        holder.resortScoreTextView.text = resort.score
+        holder.resortDetailsTextView.text = resort.address
+        val score = resort.score.toString() + resort.suffix
+        holder.resortScoreTextView.text = score
         holder.bookingUrlButton.setOnClickListener {  }
         holder.resortDetailsButton.setOnClickListener {  }
     }

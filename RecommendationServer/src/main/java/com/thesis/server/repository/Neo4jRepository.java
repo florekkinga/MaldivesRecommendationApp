@@ -49,7 +49,7 @@ public class Neo4jRepository {
             List<Record> records = result.list();
             System.out.println(records);
             for (Record r : records) {
-                String score = df.format(r.get("score").asDouble()) + "%";
+                String score = df.format(r.get("score").asDouble());
                 resorts.put(r.get("resort").asString(), score);
             }
             System.out.println(resorts);
@@ -67,7 +67,7 @@ public class Neo4jRepository {
             List<Record> records = result.list();
             for (Record r : records) {
                 Node node = r.get("other").asNode();
-                String score = df.format(r.get("jaccard_score").asDouble() * 100) + "%";
+                String score = df.format(r.get("jaccard_score").asDouble() * 100);
                 resorts.put(node.get("name").asString(),
                         new ResortDetails(node.get("address").asString(), node.get("atol").asString(), score));
             }
