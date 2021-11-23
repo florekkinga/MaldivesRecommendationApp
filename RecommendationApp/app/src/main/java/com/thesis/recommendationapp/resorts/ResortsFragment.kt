@@ -72,12 +72,12 @@ class ResortsFragment : Fragment() {
         Log.v("loadData", response.toString())
         val tmpData = arrayListOf<ResortDetails>()
         val keys = response.keys()
-        var i = 0.0
         while(keys.hasNext()){
             val key : String = keys.next()
             val address : String = response.getJSONObject(key).getString("address")
-            tmpData.add(ResortDetails(key, address, "", i, ""))
-            i += 1
+            val booking : String = response.getJSONObject(key).getString("booking")
+            val rating : Double = response.getJSONObject(key).getDouble("userRating")
+            tmpData.add(ResortDetails(key, address, booking, rating, ""))
         }
         tmpData.sortByDescending { it.score }
         this.dataSet += tmpData

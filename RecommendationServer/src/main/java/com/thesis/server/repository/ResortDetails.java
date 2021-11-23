@@ -4,16 +4,14 @@ public class ResortDetails {
     public String address;
     public String atol;
     public String score;
-    String url;
+    public String booking;
+    public Double userRating;
 
-    public ResortDetails(String address, String atol, String score){
+    public ResortDetails(String address, String atol, String score, String booking, Double userRating){
         this.address = address;
         this.atol = atol;
         this.score = score;
-    }
-
-    public ResortDetails(String address, String atol){
-        this.address = address;
-        this.atol = atol;
+        this.booking = booking;
+        this.userRating = userRating;
     }
 }

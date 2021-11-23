@@ -32,8 +32,10 @@ public class Neo4jRepository {
             List<Record> records = result.list();
             for (Record r : records) {
                 Node node = r.get("m").asNode();
+                Double rating = node.get("tripAdvisorRating").asDouble();
                 resorts.put(node.get("name").asString(),
-                        new ResortDetails(node.get("address").asString(), node.get("atol").asString()));
+                        new ResortDetails(node.get("address").asString(), node.get("atol").asString(), "",
+                                node.get("booking").asString(), rating));
             }
             System.out.println(records);
         } catch (Exception e) {
@@ -42,15 +44,19 @@ public class Neo4jRepository {
         return resorts;
     }
 
-    public Map<String, String> surveyRecommendation(String query) {
-        Map<String, String> resorts = new HashMap<>();
+    public Map<String, ResortDetails> surveyRecommendation(String query) {
+        Map<String, ResortDetails> resorts = new HashMap<>();
         try (Session session = driver.session()) {
             Result result = session.run(query);
             List<Record> records = result.list();
             System.out.println(records);
             for (Record r : records) {
+                Node node = r.get("r").asNode();
                 String score = df.format(r.get("score").asDouble());
-                resorts.put(r.get("resort").asString(), score);
+                Double rating = node.get("tripAdvisorRating").asDouble();
+                resorts.put(node.get("name").asString(),
+                        new ResortDetails(node.get("address").asString(), node.get("atol").asString(), score,
+                                node.get("booking").asString(), rating));
             }
             System.out.println(resorts);
         } catch (Exception e) {
@@ -68,8 +74,10 @@ public class Neo4jRepository {
             for (Record r : records) {
                 Node node = r.get("other").asNode();
                 String score = df.format(r.get("jaccard_score").asDouble() * 100);
+                Double rating = node.get("tripAdvisorRating").asDouble();
                 resorts.put(node.get("name").asString(),
-                        new ResortDetails(node.get("address").asString(), node.get("atol").asString(), score));
+                        new ResortDetails(node.get("address").asString(), node.get("atol").asString(), score,
+                                node.get("booking").asString(), rating));
             }
             System.out.println(records);
         } catch (Exception e) {
@@ -77,26 +85,4 @@ public class Neo4jRepository {
         }
         return resorts;
     }
-
-    //    public String buildQueryForResorts(List<String> options, String nodeType, String nodeAttribute) {
-//        return "MATCH (m:Resort)--(n:" +
-//                nodeType +
-//                ") WHERE n." +
-//                nodeAttribute +
-//                " IN " +
-//                buildOptions(options, "") +
-//                " RETURN m";
-//    }
-//
-//    public String buildQueryForResorts(String option, String nodeType, String relationshipName, String relationshipAttribute) {
-//        return "MATCH (m:Resort)-[r:" +
-//                relationshipName +
-//                "]-(n:" +
-//                nodeType +
-//                ") WHERE r." +
-//                relationshipAttribute +
-//                " < " +
-//                option +
-//                " RETURN m";
-//    }
 }

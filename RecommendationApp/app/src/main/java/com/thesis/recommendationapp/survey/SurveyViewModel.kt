@@ -41,7 +41,7 @@ class SurveyViewModel : ViewModel() {
                 "Motorized Sports", "Parasailing", "Fishing", "Kayak", "Standup Paddling", "Surfing"), OptionsButtonType.CHECKBOX),
         Question("Select types of wine and dine facilities that you would like to have available at the resort:",
             listOf("Underwater restaurant", "Buffet restaurant", "À la carte restaurant", "Bar", "Pool bar"), "wineAndDine",
-            listOf("Underwater Restaurant", "Buffet Restaurant", "À la carte Restaurant", "Bar", "Pool bar"), OptionsButtonType.CHECKBOX),
+            listOf("Underwater Restaurant", "Buffet Restaurant", "À la carte Restaurant", "Bar", "Pool Bar"), OptionsButtonType.CHECKBOX),
         Question("Select fitness activities that you would like to have available at the resort:", listOf("Beach volley", "Tennis", "Gym", "Table tennis"),
             "fitness", listOf("Beach Volley", "Tennis", "Gym", "Table Tennis"), OptionsButtonType.CHECKBOX)
     )

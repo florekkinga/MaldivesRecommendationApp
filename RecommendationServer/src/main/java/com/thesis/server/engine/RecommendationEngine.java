@@ -17,7 +17,7 @@ public class RecommendationEngine {
         this.repository = repository;
     }
 
-    public Map<String, ResortDetails> getResorts(){
+    public Map<String, ResortDetails> getResorts() {
         return repository.getResorts();
     }
 
@@ -34,8 +34,8 @@ public class RecommendationEngine {
         return repository.similarityRecommendation(query);
     }
 
-    public Map<String, String> getSurveyRecommendation(SurveyAnswers answers){
-        String starRatingOptions = buildOptions(answers.getStarRating().getOptions(),"");
+    public Map<String, ResortDetails> getSurveyRecommendation(SurveyAnswers answers) {
+        String starRatingOptions = buildOptions(answers.getStarRating().getOptions(), "");
         Double starRatingFactor = answers.getStarRating().getImportance() / answers.getStarRating().getOptions().size();
         String transferOptions = buildOptions(answers.getTransfer().getOptions(), "'");
         Double transferOptionsFactor = answers.getTransfer().getImportance() / answers.getTransfer().getOptions().size();
@@ -49,7 +49,7 @@ public class RecommendationEngine {
         String accommodationPriceImportance = answers.getAccommodationPrice().getImportance().toString();
         StringBuilder boardOptions = new StringBuilder();
         String prefix = "";
-        for(String s: answers.getBoardBasis().getOptions()){
+        for (String s : answers.getBoardBasis().getOptions()) {
             boardOptions.append(prefix);
             prefix = "OR ";
             boardOptions.append("a.").append(s).append(" IS NOT NULL ");
@@ -64,72 +64,97 @@ public class RecommendationEngine {
 
         Double importanceSum = answers.getSumOfImportance();
 
-        String query = String.format(
-                "MATCH (r:Resort)-[:RATING]-(sr:StarRating)\n" +
-                "WHERE sr.rating in %s\n" +
-                "WITH r, count(sr) * %s as c\n" +
-                "WITH COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[:TRANSFER]-(tr:Transfer)\n" +
-                "WHERE tr.type in %s\n" +
-                "WITH resorts, r, count(tr) * %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[t:TRANSFER]-(:Transfer)\n" +
-                "WHERE t.time < %s\n" +
-                "WITH DISTINCT r as r, resorts, %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[t:TRANSFER]-(:Transfer)\n" +
-                "WHERE t.price < %s\n" +
-                "WITH DISTINCT r as r, resorts, %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[:ACCOMMODATION]-(ac:Accommodation)\n" +
-                "WHERE ac.type in %s \n" +
-                "WITH r, resorts, count(ac) * %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[a:ACCOMMODATION]-(:Accommodation)\n" +
-                "WHERE a.halfBoard < %s OR a.fullBoard < %s OR a.allInclusive < %s\n" +
-                "WITH DISTINCT r as r, resorts, %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[a:ACCOMMODATION]-(:Accommodation)\n" +
-                "WHERE %s \n" +
-                "WITH DISTINCT r as r, resorts, %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[:WATER_SPORTS]-(w:WaterSports)\n" +
-                "WHERE w.name in %s \n" +
-                "WITH r, resorts, count(w) * %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[:WINE_AND_DINE]-(w:WineAndDine)\n" +
-                "WHERE w.type in %s \n" +
-                "WITH r, resorts, count(w) * %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "MATCH (r:Resort)-[:FITNESS]-(f:Fitness)\n" +
-                "WHERE f.name in %s\n" +
-                "WITH r, resorts, count(f) * %s as c\n" +
-                "WITH resorts + COLLECT({name: r.name, score: c}) as resorts\n" +
-                "\n" +
-                "UNWIND resorts as resort\n" +
-                "RETURN resort.name as resort, sum(resort.score) / %s * 100 as score ORDER BY score DESC",
-                starRatingOptions, starRatingFactor,
-                transferOptions, transferOptionsFactor,
-                transferTime, transferTimeImportance,
-                transferPrice, transferPriceImportance,
-                accommodationOptions, accommodationFactor,
-                accommodationPrice, accommodationPrice, accommodationPrice, accommodationPriceImportance,
-                boardOptions, boardImportance,
-                waterSportsOptions, waterSportsFactor,
-                wineAndDineOptions, wineAndDineFactor,
-                fitnessOptions, fitnessFactor,
-                importanceSum);
+        String query = "";
+        if (!answers.getStarRating().getOptions().isEmpty()) {
+            query += String.format(
+                    "MATCH (r:Resort)-[:RATING]-(sr:StarRating)\n" +
+                            "WHERE sr.rating in %s\n" +
+                            "WITH r, count(sr) * %s as c\n" +
+                            "WITH COLLECT({name: r, score: c}) as resorts\n",
+                    starRatingOptions, starRatingFactor);
+        }
+        if (!answers.getTransfer().getOptions().isEmpty()) {
+            query += String.format(
+                    "MATCH (r:Resort)-[:TRANSFER]-(tr:Transfer)\n" +
+                            "WHERE tr.type in %s\n" +
+                            "WITH resorts, r, count(tr) * %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    transferOptions, transferOptionsFactor);
+        }
+        if (answers.getTransferTime().getTime() != 0) {
+            query += String.format(
+                    "MATCH (r:Resort)-[t:TRANSFER]-(:Transfer)\n" +
+                            "WHERE t.time < %s\n" +
+                            "WITH DISTINCT r as r, resorts, %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    transferTime, transferTimeImportance);
+        }
+        if (answers.getTransferPrice().getPrice() != 0) {
+            query += String.format(
+                    "MATCH (r:Resort)-[t:TRANSFER]-(:Transfer)\n" +
+                            "WHERE t.price < %s\n" +
+                            "WITH DISTINCT r as r, resorts, %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    transferPrice, transferPriceImportance);
+        }
+        if (!answers.getAccommodation().getOptions().isEmpty()) {
+            query += String.format(
+                    "MATCH (r:Resort)-[:ACCOMMODATION]-(ac:Accommodation)\n" +
+                            "WHERE ac.type in %s \n" +
+                            "WITH r, resorts, count(ac) * %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    accommodationOptions, accommodationFactor);
+        }
+        if (answers.getAccommodationPrice().getPrice() != 0) {
+            query += String.format(
+                    "MATCH (r:Resort)-[a:ACCOMMODATION]-(:Accommodation)\n" +
+                            "WHERE a.halfBoard < %s OR a.fullBoard < %s OR a.allInclusive < %s\n" +
+                            "WITH DISTINCT r as r, resorts, %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    accommodationPrice, accommodationPrice, accommodationPrice, accommodationPriceImportance);
+        }
+        if (!answers.getBoardBasis().getOptions().isEmpty()) {
+            query += String.format(
+                    "MATCH (r:Resort)-[a:ACCOMMODATION]-(:Accommodation)\n" +
+                            "WHERE %s \n" +
+                            "WITH DISTINCT r as r, resorts, %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    boardOptions, boardImportance);
+        }
+        if (!answers.getWaterSports().getOptions().isEmpty()) {
+            query += String.format(
+                    "MATCH (r:Resort)-[:WATER_SPORTS]-(w:WaterSports)\n" +
+                            "WHERE w.name in %s \n" +
+                            "WITH r, resorts, count(w) * %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    waterSportsOptions, waterSportsFactor);
+        }
+        if (!answers.getWineAndDine().getOptions().isEmpty()) {
+            query += String.format(
+                    "MATCH (r:Resort)-[:WINE_AND_DINE]-(w:WineAndDine)\n" +
+                            "WHERE w.type in %s \n" +
+                            "WITH r, resorts, count(w) * %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    wineAndDineOptions, wineAndDineFactor);
+        }
+        if (!answers.getFitness().getOptions().isEmpty()) {
+            query += String.format(
+                    "MATCH (r:Resort)-[:FITNESS]-(f:Fitness)\n" +
+                            "WHERE f.name in %s\n" +
+                            "WITH r, resorts, count(f) * %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
+                    fitnessOptions, fitnessFactor);
+        }
 
-//        System.out.println(query);
+        if(!query.equals("") && importanceSum != 0){
+            query += String.format("UNWIND resorts as resort\n" +
+                    "RETURN resort.name as r, sum(resort.score) / %s * 100 as score ORDER BY score DESC",
+                    importanceSum);
+            System.out.println(query);
+        }
+        else{
+            query += "MATCH (r:Resort) RETURN r, 100 as score";
+        }
         return repository.surveyRecommendation(query);
     }
 

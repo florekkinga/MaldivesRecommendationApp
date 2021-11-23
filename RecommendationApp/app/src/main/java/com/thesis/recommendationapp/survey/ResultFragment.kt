@@ -70,7 +70,10 @@ class ResultFragment : Fragment() {
         val keys = response.keys()
         while(keys.hasNext()){
             val key : String = keys.next()
-            tmpData.add(ResortDetails(key, "", "", response.getDouble(key)))
+            val address : String = response.getJSONObject(key).getString("address")
+            val booking : String = response.getJSONObject(key).getString("booking")
+            val score : Double = response.getJSONObject(key).getDouble("score")
+            tmpData.add(ResortDetails(key, address, booking, score))
         }
         tmpData.sortByDescending { it.score }
         this.dataSet += tmpData
