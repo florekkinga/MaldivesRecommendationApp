@@ -130,6 +130,7 @@ class MultiselectQuestionFragment : Fragment() {
         else {
             checkBoxes.forEach{ c -> c.visibility = View.GONE }
             radioButtonGroup.visibility = View.VISIBLE
+            radioButtons.forEach{ c -> c.visibility = View.VISIBLE }
             radioButtons.forEachIndexed { i, element ->
                 if(i < numberOfOptions) {
                     element.text = options[i]
@@ -137,7 +138,7 @@ class MultiselectQuestionFragment : Fragment() {
                 else {
                     element.visibility = View.GONE
                 }
-
+                Log.v("radioB", element.text.toString())
             }
         }
 

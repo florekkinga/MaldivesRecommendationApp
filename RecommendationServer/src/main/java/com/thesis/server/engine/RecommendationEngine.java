@@ -36,15 +36,15 @@ public class RecommendationEngine {
 
     public Map<String, ResortDetails> getSurveyRecommendation(SurveyAnswers answers) {
         String starRatingOptions = buildOptions(answers.getStarRating().getOptions(), "");
-        Double starRatingFactor = answers.getStarRating().getImportance() / answers.getStarRating().getOptions().size();
+        Double starRatingFactor = answers.getStarRating().getImportance();
         String transferOptions = buildOptions(answers.getTransfer().getOptions(), "'");
-        Double transferOptionsFactor = answers.getTransfer().getImportance() / answers.getTransfer().getOptions().size();
+        Double transferOptionsFactor = answers.getTransfer().getImportance();
         String transferPrice = answers.getTransferPrice().getPrice().toString();
         String transferPriceImportance = answers.getTransferPrice().getImportance().toString();
         String transferTime = answers.getTransferTime().getTime().toString();
         String transferTimeImportance = answers.getTransferTime().getImportance().toString();
         String accommodationOptions = buildOptions(answers.getAccommodation().getOptions(), "'");
-        Double accommodationFactor = answers.getAccommodation().getImportance() / answers.getAccommodation().getOptions().size();
+        Double accommodationFactor = answers.getAccommodation().getImportance();
         String accommodationPrice = answers.getAccommodationPrice().getPrice().toString();
         String accommodationPriceImportance = answers.getAccommodationPrice().getImportance().toString();
         StringBuilder boardOptions = new StringBuilder();
@@ -64,13 +64,15 @@ public class RecommendationEngine {
 
         Double importanceSum = answers.getSumOfImportance();
 
-        String query = "";
+        String query = "MATCH (r:Resort)\n" +
+                "WITH COLLECT({name: r, score: 0}) as resorts\n";
+
         if (!answers.getStarRating().getOptions().isEmpty()) {
             query += String.format(
                     "MATCH (r:Resort)-[:RATING]-(sr:StarRating)\n" +
                             "WHERE sr.rating in %s\n" +
-                            "WITH r, count(sr) * %s as c\n" +
-                            "WITH COLLECT({name: r, score: c}) as resorts\n",
+                            "WITH resorts, r, count(sr) * %s as c\n" +
+                            "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
                     starRatingOptions, starRatingFactor);
         }
         if (!answers.getTransfer().getOptions().isEmpty()) {
@@ -146,14 +148,14 @@ public class RecommendationEngine {
                     fitnessOptions, fitnessFactor);
         }
 
-        if(!query.equals("") && importanceSum != 0){
+        if(importanceSum != 0){
             query += String.format("UNWIND resorts as resort\n" +
                     "RETURN resort.name as r, sum(resort.score) / %s * 100 as score ORDER BY score DESC",
                     importanceSum);
             System.out.println(query);
         }
         else{
-            query += "MATCH (r:Resort) RETURN r, 100 as score";
+            query = "MATCH (r:Resort) RETURN r, 100 as score";
         }
         return repository.surveyRecommendation(query);
     }

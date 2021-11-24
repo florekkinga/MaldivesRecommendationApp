@@ -13,7 +13,7 @@ class Question(val content: String, val options: List<String>, val jsonFieldName
             json += "["
             var separator = ""
             answers.forEachIndexed { i, element ->
-                Log.v("question", element.toString())
+//                Log.v("question", element.toString())
                 if (element) {
                     json += separator
                     separator = ","

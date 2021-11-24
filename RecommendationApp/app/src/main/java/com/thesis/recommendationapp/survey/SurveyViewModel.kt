@@ -18,12 +18,12 @@ class SurveyViewModel : ViewModel() {
             listOf("Sea plane", "Speed boat", "Mixed transfer"), "transfer",
             listOf("Sea Plane", "Speed Boat", "Mixed Transfer"), OptionsButtonType.CHECKBOX),
         Question(
-            "Choose the maximum transfer price (1 person):", listOf("150$", "300$", "500$"),
-            "transferPrice", listOf("150", "300", "500"), OptionsButtonType.RADIO_BUTTON,
+            "Choose the maximum transfer price (1 person):", listOf("200$", "400$", "600$", "600$+"),
+            "transferPrice", listOf("200", "400", "600", "1200"), OptionsButtonType.RADIO_BUTTON,
             "price"),
         Question(
-            "Choose the maximum transfer time:", listOf("30 minutes", "60 minutes", "90 minutes"),
-            "transferTime", listOf("30", "60", "90"), OptionsButtonType.RADIO_BUTTON, "time"),
+            "Choose the maximum transfer time:", listOf("30 minutes", "50 minutes", "70 minutes"),
+            "transferTime", listOf("30", "50", "70"), OptionsButtonType.RADIO_BUTTON, "time"),
         Question(
             "Select your preferred type of accommodation:", listOf("Room", "Beach bungalow", "Beach bungalow with pool",
             "Water bungalow", "Water bungalow with pool", "Water suite", "Water suite with pool"), "accommodation",
@@ -33,12 +33,11 @@ class SurveyViewModel : ViewModel() {
             "Select your preferred type of board basis:", listOf("Half board", "Full board", "All inclusive"),
             "boardBasis", listOf("halfBoard", "fullBoard", "allInclusive"), OptionsButtonType.CHECKBOX),
         Question(
-            "Select the maximum accommodation price (2 people/ 1 night):", listOf("600$", "1300$", "2000$"),
-            "accommodationPrice", listOf("600", "1300", "2000"), OptionsButtonType.RADIO_BUTTON, "price"),
+            "Select the maximum accommodation price (2 people/ 1 night):", listOf("800$", "1500$", "2000$", "2000$+"),
+            "accommodationPrice", listOf("800", "1500", "2000", "7000"), OptionsButtonType.RADIO_BUTTON, "price"),
         Question("Select water sports activities that you would like to have available at the resort:",
-            listOf("Scuba diving", "Catamaran sailing", "Kite surfing", "Wind surfing", "Snorkeling", "Jet ski", "Motorized sports", "Parasailing", "Fishing", "Kayak", "Stand-up Paddling", "Surfing"),
-            "waterSports", listOf("Scuba Diving", "Catamaran Sailing", "Kite Surfing", "Wind Surfing", "Snorkeling", "Jet Ski",
-                "Motorized Sports", "Parasailing", "Fishing", "Kayak", "Standup Paddling", "Surfing"), OptionsButtonType.CHECKBOX),
+            listOf("Scuba diving", "Catamaran sailing", "Kite surfing", "Wind surfing", "Snorkeling", "Jet ski", "Parasailing", "Kayak", "Stand-up Paddling", "Surfing"),
+            "waterSports", listOf("Scuba Diving", "Catamaran Sailing", "Kite Surfing", "Wind Surfing", "Snorkeling", "Jet Ski", "Parasailing", "Kayak", "Standup Paddling", "Surfing"), OptionsButtonType.CHECKBOX),
         Question("Select types of wine and dine facilities that you would like to have available at the resort:",
             listOf("Underwater restaurant", "Buffet restaurant", "À la carte restaurant", "Bar", "Pool bar"), "wineAndDine",
             listOf("Underwater Restaurant", "Buffet Restaurant", "À la carte Restaurant", "Bar", "Pool Bar"), OptionsButtonType.CHECKBOX),
@@ -99,17 +98,10 @@ class SurveyViewModel : ViewModel() {
         questions[currQuestionNumber].importance = ratingBar.rating.toDouble()
         questions[currQuestionNumber].answers.forEachIndexed { i, answer ->
             if(getTypeOfButtonForOptions() == OptionsButtonType.CHECKBOX) {
-                if (checkBoxes[i].isChecked) {
-                    Log.v("survey", questions[currQuestionNumber].jsonFieldName)
-                    questions[currQuestionNumber].answers[i] = true
-                    Log.v("array-survey", questions[currQuestionNumber].answers[i].toString())
-                    Log.v("survey-json", questions[currQuestionNumber].generateJSON())
-                }
+                questions[currQuestionNumber].answers[i] = checkBoxes[i].isChecked
             }
             else {
-                if(radioButtons[i].isChecked) {
-                    questions[currQuestionNumber].answers[i] = true
-                }
+                questions[currQuestionNumber].answers[i] = radioButtons[i].isChecked
             }
         }
 
@@ -135,8 +127,6 @@ class SurveyViewModel : ViewModel() {
     fun getJSON() : String {
         var json = "{"
         var separator = ""
-        Log.v("survey-json", questions[0].generateJSON())
-        Log.v("survey-json", questions[1].generateJSON())
         questions.forEach{ question ->
             json += separator
             separator = ","

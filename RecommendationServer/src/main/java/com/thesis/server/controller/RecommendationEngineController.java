@@ -25,10 +25,10 @@ public class RecommendationEngineController {
         return engine.getSurveyRecommendation(answers);
     }
 
-    @PostMapping(path = "/similarity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/similarity/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, ResortDetails> getSimilarityRecommendation(@RequestBody String name) {
-        return engine.getSimilarityRecommendation(name);
+    public Map<String, ResortDetails> getSimilarityRecommendation(@RequestBody Map<String, String> resort) {
+        return engine.getSimilarityRecommendation(resort.get("name"));
     }
 
     @GetMapping(path = "/resorts", produces = MediaType.APPLICATION_JSON_VALUE)
