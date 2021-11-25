@@ -13,6 +13,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.thesis.recommendationapp.R
+import com.thesis.recommendationapp.ResortDetailsActivity
+import com.thesis.recommendationapp.similarity.SimilarityResult
 
 
 class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: Context) :
@@ -34,24 +36,24 @@ class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val resort = dataSet[position]
         holder.resortNameTextView.text = resort.name
-        if(resort.address != ""){
+        if (resort.address != "") {
             holder.resortDetailsTextView.text = resort.address
         }
-        val score = if(resort.suffix == ""){
+        val score = if (resort.suffix == "") {
             resort.score.toString()
         } else {
             String.format("%.2f", resort.score) + resort.suffix
         }
         holder.resortScoreTextView.text = score
         holder.resortScoreTextView.setTextColor(Color.parseColor("#009688"))
-        if(resort.suffix == "%" && resort.score <= 80.0){
-            Log.v("looooooooool","aaaaaaa")
+        if (resort.suffix == "%" && resort.score <= 80.0) {
+            Log.v("looooooooool", "aaaaaaa")
             holder.resortScoreTextView.setTextColor(Color.parseColor("#FFC107"))
-            if(resort.score <= 60.0){
+            if (resort.score <= 60.0) {
                 holder.resortScoreTextView.setTextColor(Color.parseColor("#FF5722"))
             }
         }
-        if (position%2 == 0) {
+        if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(Color.parseColor("#f3f3f3"))
         } else {
             holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"))
@@ -61,7 +63,10 @@ class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: 
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(resort.url))
             startActivity(context, browserIntent, null)
         }
-        holder.resortDetailsButton.setOnClickListener {  }
+        holder.resortDetailsButton.setOnClickListener {
+            val intent = Intent(context, ResortDetailsActivity::class.java).apply {}
+            startActivity(context, intent, null)
+        }
     }
 
     override fun getItemCount(): Int = dataSet.size

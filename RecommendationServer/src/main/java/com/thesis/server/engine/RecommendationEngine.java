@@ -71,7 +71,7 @@ public class RecommendationEngine {
             query += String.format(
                     "MATCH (r:Resort)-[:RATING]-(sr:StarRating)\n" +
                             "WHERE sr.rating in %s\n" +
-                            "WITH resorts, r, count(sr) * %s as c\n" +
+                            "WITH DISTINCT r as r, resorts, %s as c\n" +
                             "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
                     starRatingOptions, starRatingFactor);
         }
@@ -79,7 +79,7 @@ public class RecommendationEngine {
             query += String.format(
                     "MATCH (r:Resort)-[:TRANSFER]-(tr:Transfer)\n" +
                             "WHERE tr.type in %s\n" +
-                            "WITH resorts, r, count(tr) * %s as c\n" +
+                            "WITH DISTINCT r as r, resorts, %s as c\n" +
                             "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
                     transferOptions, transferOptionsFactor);
         }
@@ -103,7 +103,7 @@ public class RecommendationEngine {
             query += String.format(
                     "MATCH (r:Resort)-[:ACCOMMODATION]-(ac:Accommodation)\n" +
                             "WHERE ac.type in %s \n" +
-                            "WITH r, resorts, count(ac) * %s as c\n" +
+                            "WITH DISTINCT r as r, resorts, %s as c\n" +
                             "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
                     accommodationOptions, accommodationFactor);
         }

@@ -32,13 +32,13 @@ class SimilarityResult : AppCompatActivity() {
         recyclerView.adapter = adapter
         val divider = DividerItemDecoration(recyclerView.context, layoutManager.orientation)
         recyclerView.addItemDecoration(divider)
-        callRecommendationEngine(this)
+        callRecommendationEngine(this, intent.getStringExtra("resortName").toString())
     }
 
-        private fun callRecommendationEngine(context: Context) {
+        private fun callRecommendationEngine(context: Context, resortName: String) {
             val queue = Volley.newRequestQueue(context)
             val url = "http://10.0.2.2:8080/similarity/"
-            val jsonObject = JSONObject("""{"name":"Cinnamon Dhonveli Maldives"}""")
+            val jsonObject = JSONObject("{\"name\":\"$resortName\"}")
             val jsonObjectRequest = JsonObjectRequest(
                 Request.Method.POST, url, jsonObject,
                 { response ->

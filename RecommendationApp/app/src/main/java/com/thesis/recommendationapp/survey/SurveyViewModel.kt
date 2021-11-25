@@ -40,7 +40,7 @@ class SurveyViewModel : ViewModel() {
             "waterSports", listOf("Scuba Diving", "Catamaran Sailing", "Kite Surfing", "Wind Surfing", "Snorkeling", "Jet Ski", "Parasailing", "Kayak", "Standup Paddling", "Surfing"), OptionsButtonType.CHECKBOX),
         Question("Select types of wine and dine facilities that you would like to have available at the resort:",
             listOf("Underwater restaurant", "Buffet restaurant", "À la carte restaurant", "Bar", "Pool bar"), "wineAndDine",
-            listOf("Underwater Restaurant", "Buffet Restaurant", "À la carte Restaurant", "Bar", "Pool Bar"), OptionsButtonType.CHECKBOX),
+            listOf("Underwater Restaurant", "Buffet Restaurant", "À la carte Restaurant", "Bar", "Pool bar"), OptionsButtonType.CHECKBOX),
         Question("Select fitness activities that you would like to have available at the resort:", listOf("Beach volley", "Tennis", "Gym", "Table tennis"),
             "fitness", listOf("Beach Volley", "Tennis", "Gym", "Table Tennis"), OptionsButtonType.CHECKBOX)
     )
@@ -99,6 +99,7 @@ class SurveyViewModel : ViewModel() {
         questions[currQuestionNumber].answers.forEachIndexed { i, answer ->
             if(getTypeOfButtonForOptions() == OptionsButtonType.CHECKBOX) {
                 questions[currQuestionNumber].answers[i] = checkBoxes[i].isChecked
+                Log.v("checkbox", checkBoxes[i].text.toString() + checkBoxes[i].isChecked)
             }
             else {
                 questions[currQuestionNumber].answers[i] = radioButtons[i].isChecked
