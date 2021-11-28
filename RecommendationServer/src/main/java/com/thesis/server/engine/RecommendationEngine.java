@@ -1,7 +1,8 @@
 package com.thesis.server.engine;
 
 import com.thesis.server.repository.Neo4jRepository;
-import com.thesis.server.repository.ResortDetails;
+import com.thesis.server.repository.Resort;
+import com.thesis.server.repository.ResortFacilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +18,15 @@ public class RecommendationEngine {
         this.repository = repository;
     }
 
-    public Map<String, ResortDetails> getResorts() {
+    public Map<String, Resort> getResorts() {
         return repository.getResorts();
     }
 
-    public Map<String, ResortDetails> getSimilarityRecommendation(String name) {
+    public ResortFacilities getResortDetailsAndFacilities(String name) {
+        return repository.getResortDetailsAndFacilities(name);
+    }
+
+    public Map<String, Resort> getSimilarityRecommendation(String name) {
         String query = "MATCH (r:Resort {name: \"" + name + "\"})-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(t)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(other:Resort)\n" +
                 "WITH r, other, COUNT(t) AS intersection, COLLECT(t.type) AS i\n" +
                 "MATCH (r)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(m1)\n" +
@@ -31,10 +36,11 @@ public class RecommendationEngine {
                 "WITH r, other, intersection, i, s1, s2\n" +
                 "WITH r, other, intersection, s1+[x IN s2 WHERE NOT x IN s1] AS union, s1, s2\n" +
                 "RETURN other, ((1.0*intersection)/SIZE(union)) AS jaccard_score ORDER BY jaccard_score DESC";
+        System.out.println(query);
         return repository.similarityRecommendation(query);
     }
 
-    public Map<String, ResortDetails> getSurveyRecommendation(SurveyAnswers answers) {
+    public Map<String, Resort> getSurveyRecommendation(SurveyAnswers answers) {
         String starRatingOptions = buildOptions(answers.getStarRating().getOptions(), "");
         Double starRatingFactor = answers.getStarRating().getImportance();
         String transferOptions = buildOptions(answers.getTransfer().getOptions(), "'");

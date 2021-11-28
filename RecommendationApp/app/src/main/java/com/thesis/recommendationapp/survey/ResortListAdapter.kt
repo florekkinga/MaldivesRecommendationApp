@@ -47,7 +47,6 @@ class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: 
         holder.resortScoreTextView.text = score
         holder.resortScoreTextView.setTextColor(Color.parseColor("#009688"))
         if (resort.suffix == "%" && resort.score <= 80.0) {
-            Log.v("looooooooool", "aaaaaaa")
             holder.resortScoreTextView.setTextColor(Color.parseColor("#FFC107"))
             if (resort.score <= 60.0) {
                 holder.resortScoreTextView.setTextColor(Color.parseColor("#FF5722"))
@@ -64,7 +63,9 @@ class ResortListAdapter(var dataSet: Array<ResortDetails>, private val context: 
             startActivity(context, browserIntent, null)
         }
         holder.resortDetailsButton.setOnClickListener {
-            val intent = Intent(context, ResortDetailsActivity::class.java).apply {}
+            val intent = Intent(context, ResortDetailsActivity::class.java).apply {
+                putExtra("resortName", resort.name)
+            }
             startActivity(context, intent, null)
         }
     }

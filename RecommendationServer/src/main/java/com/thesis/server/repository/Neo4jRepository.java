@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,8 @@ public class Neo4jRepository {
         this.driver = driver;
     }
 
-    public Map<String, ResortDetails> getResorts() {
-        Map<String, ResortDetails> resorts = new HashMap<>();
+    public Map<String, Resort> getResorts() {
+        Map<String, Resort> resorts = new HashMap<>();
 
         try (Session session = driver.session()) {
             Result result = session.run("MATCH (m:Resort) RETURN m");
@@ -34,7 +35,7 @@ public class Neo4jRepository {
                 Node node = r.get("m").asNode();
                 Double rating = node.get("tripAdvisorRating").asDouble();
                 resorts.put(node.get("name").asString(),
-                        new ResortDetails(node.get("address").asString(), node.get("atol").asString(), "",
+                        new Resort(node.get("address").asString(), node.get("atol").asString(), "",
                                 node.get("booking").asString(), rating));
             }
             System.out.println(records);
@@ -44,8 +45,8 @@ public class Neo4jRepository {
         return resorts;
     }
 
-    public Map<String, ResortDetails> surveyRecommendation(String query) {
-        Map<String, ResortDetails> resorts = new HashMap<>();
+    public Map<String, Resort> surveyRecommendation(String query) {
+        Map<String, Resort> resorts = new HashMap<>();
         try (Session session = driver.session()) {
             Result result = session.run(query);
             List<Record> records = result.list();
@@ -55,7 +56,7 @@ public class Neo4jRepository {
                 String score = df.format(r.get("score").asDouble());
                 Double rating = node.get("tripAdvisorRating").asDouble();
                 resorts.put(node.get("name").asString(),
-                        new ResortDetails(node.get("address").asString(), node.get("atol").asString(), score,
+                        new Resort(node.get("address").asString(), node.get("atol").asString(), score,
                                 node.get("booking").asString(), rating));
             }
             System.out.println(resorts);
@@ -65,8 +66,8 @@ public class Neo4jRepository {
         return resorts;
     }
 
-    public Map<String, ResortDetails> similarityRecommendation(String query) {
-        Map<String, ResortDetails> resorts = new HashMap<>();
+    public Map<String, Resort> similarityRecommendation(String query) {
+        Map<String, Resort> resorts = new HashMap<>();
 
         try (Session session = driver.session()) {
             Result result = session.run(query);
@@ -76,7 +77,7 @@ public class Neo4jRepository {
                 String score = df.format(r.get("jaccard_score").asDouble() * 100);
                 Double rating = node.get("tripAdvisorRating").asDouble();
                 resorts.put(node.get("name").asString(),
-                        new ResortDetails(node.get("address").asString(), node.get("atol").asString(), score,
+                        new Resort(node.get("address").asString(), node.get("atol").asString(), score,
                                 node.get("booking").asString(), rating));
             }
             System.out.println(records);
@@ -84,5 +85,66 @@ public class Neo4jRepository {
             System.out.println(e.getMessage());
         }
         return resorts;
+    }
+
+    public ResortFacilities getResortDetailsAndFacilities(String name) {
+
+        String query = "MATCH (r:Resort)--(f) \n" +
+                "WHERE r.name = \"" + name + "\" \n" +
+                "return r, f";
+
+        try (Session session = driver.session()) {
+            Node resort_node = null;
+            List<AccommodationRepository> accommodation = new ArrayList<>();
+            List<TransferRepository> transfer = new ArrayList<>();
+            Integer starRating = null;
+            List<String> wineAndDine = new ArrayList<>();
+            List<String> waterSports = new ArrayList<>();
+            List<String> fitness = new ArrayList<>();
+
+            Result result = session.run(query);
+            List<Record> records = result.list();
+            for (Record r : records) {
+                resort_node = r.get("r").asNode();
+                Node facility_node = r.get("f").asNode();
+                if(facility_node.hasLabel("StarRating")){
+                    starRating = facility_node.get("rating").asInt();
+                }
+                else if(facility_node.hasLabel("Accommodation")){
+//                    Integer halfBoard = !facility_node.get("halfBoard").isNull() ? facility_node.get("halfBoard").asInt() : null;
+//                    Integer fullBoard = !facility_node.get("fullBoard").isNull() ? facility_node.get("fullBoard").asInt() : null;
+//                    Integer allInclusive = !facility_node.get("allInclusive").isNull() ? facility_node.get("allInclusive").asInt() : null;
+                    accommodation.add(new AccommodationRepository(facility_node.get("type").asString(),
+                            null, null, null));
+                }
+                else if(facility_node.hasLabel("Transfer")){
+                    transfer.add(new TransferRepository(facility_node.get("type").asString(), null, null));
+                }
+                else if(facility_node.hasLabel("WaterSports")){
+                    waterSports.add(facility_node.get("name").asString());
+                }
+                else if(facility_node.hasLabel("WineAndDine")){
+                    wineAndDine.add(facility_node.get("type").asString());
+                }
+                else if(facility_node.hasLabel("Fitness")){
+                    fitness.add(facility_node.get("name").asString());
+                }
+            }
+
+            System.out.println(records);
+            if(resort_node != null){
+                String address = resort_node.get("address").asString();
+                String atol = resort_node.get("atol").asString();
+                String booking = resort_node.get("booking").asString();
+                double tripAdvisorRating = resort_node.get("tripAdvisorRating").asDouble();
+
+                return new ResortFacilities(address, atol, "", booking, tripAdvisorRating, accommodation, transfer, starRating, wineAndDine, waterSports, fitness);
+            }
+            return null;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }

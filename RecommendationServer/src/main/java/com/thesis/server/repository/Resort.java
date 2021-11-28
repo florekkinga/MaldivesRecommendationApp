@@ -1,13 +1,13 @@
 package com.thesis.server.repository;
 
-public class ResortDetails {
+public class Resort {
     public String address;
     public String atol;
     public String score;
     public String booking;
     public Double userRating;
 
-    public ResortDetails(String address, String atol, String score, String booking, Double userRating){
+    public Resort(String address, String atol, String score, String booking, Double userRating){
         this.address = address;
         this.atol = atol;
         this.score = score;
