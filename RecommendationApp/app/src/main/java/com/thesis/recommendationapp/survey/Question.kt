@@ -1,7 +1,5 @@
 package com.thesis.recommendationapp.survey
 
-import android.util.Log
-
 class Question(val content: String, val options: List<String>, val jsonFieldName: String, val optionsJson: List<String>, val buttonType: OptionsButtonType, val optionFieldName : String = "options") {
     var answers: MutableList<Boolean> = options.map {false} as MutableList<Boolean>
     var radiobuttonValue: String = "0"
@@ -13,7 +11,6 @@ class Question(val content: String, val options: List<String>, val jsonFieldName
             json += "["
             var separator = ""
             answers.forEachIndexed { i, element ->
-//                Log.v("question", element.toString())
                 if (element) {
                     json += separator
                     separator = ","

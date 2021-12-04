@@ -12,9 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecommendationApp">
-        <activity android:name=".ResortDetailsActivity"></activity>
-        <activity android:name=".similarity.SimilarityResult" />
-        <activity android:name=".similarity.SelectResort" />
+        <activity
+            android:name=".ResortDetailsActivity"
+            android:label="Resort details"
+            />
+        <activity
+            android:name=".similarity.SelectResort"
+            android:label="Select Resort" />
+        <activity android:name=".similarity.SimilarityResult"
+            android:label="Similar resorts" />
+
         <activity android:name=".SurveyActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

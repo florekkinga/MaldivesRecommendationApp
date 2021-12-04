@@ -1,15 +1,20 @@
 package com.thesis.recommendationapp
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.thesis.recommendationapp.survey.ResortDetails
+import org.json.JSONArray
 import org.json.JSONObject
 
 class ResortDetailsActivity : AppCompatActivity() {
@@ -24,6 +29,9 @@ class ResortDetailsActivity : AppCompatActivity() {
     private lateinit var waterSports: TextView
     private lateinit var fitness: TextView
 
+    private lateinit var bookingButton: Button
+    private var bookingUrl = "https://booking.com"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resort_details)
@@ -36,8 +44,14 @@ class ResortDetailsActivity : AppCompatActivity() {
         dining = findViewById(R.id.wineAndDine)
         waterSports = findViewById(R.id.waterSports)
         fitness = findViewById(R.id.fitness)
+        bookingButton = findViewById(R.id.button)
         val resort = intent.getStringExtra("resortName").toString()
         sendRequest(this, resort)
+        bookingButton.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bookingUrl))
+            startActivity(browserIntent)
+        }
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun sendRequest(context: Context, resortName: String) {
@@ -59,12 +73,28 @@ class ResortDetailsActivity : AppCompatActivity() {
     private fun loadData(response: JSONObject, resort: String) {
         resortName.text = resort
         addressDetails.text = response.getString("address") + "\n" + response.getString("atol")
+        bookingUrl = response.getString("booking")
         tripAdvisorRating.text = response.getDouble("userRating").toString()
         starRating.text = response.getDouble("starRating").toString()
-        accommodation.text = response.getJSONArray("accommodation").toString()
-        transfer.text = response.getJSONArray("transfer").toString()
-        waterSports.text = response.getJSONArray("waterSports").toString()
-        dining.text = response.getJSONArray("wineAndDine").toString()
-        fitness.text = response.getJSONArray("fitness").toString()
+        accommodation.text = getOptions(response.getJSONArray("accommodation"), "type")
+        transfer.text = getOptions(response.getJSONArray("transfer"), "name")
+        waterSports.text = getOptions(response.getJSONArray("waterSports"))
+        dining.text = getOptions(response.getJSONArray("wineAndDine"))
+        fitness.text = getOptions(response.getJSONArray("fitness"))
+    }
+
+    private fun getOptions(jsonArray: JSONArray, key: String = "") : String {
+        var result = ""
+        var prefix = ""
+        for(i in 0 until jsonArray.length()){
+            result += prefix
+            prefix = ", "
+            result += if(key == ""){
+                jsonArray.getString(i)
+            } else {
+                jsonArray.getJSONObject(i).getString(key)
+            }
+        }
+        return result
     }
 }

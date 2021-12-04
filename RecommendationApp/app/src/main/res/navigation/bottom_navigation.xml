@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/recommendation"
         android:name="com.thesis.recommendationapp.recommendation.NewRecommendationFragment"
-        android:label="Recommendation engine"
+        android:label="Explore Maldives Resorts"
         tools:layout="@layout/new_recommendation_fragment" />
     <fragment
         android:id="@+id/resorts"

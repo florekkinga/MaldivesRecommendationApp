@@ -62,6 +62,14 @@ class SurveyViewModel : ViewModel() {
         return questions[currQuestionNumber].options
     }
 
+    fun getCurrentAnswers() : List<Boolean> {
+        return questions[currQuestionNumber].answers
+    }
+
+    fun getCurrentImportance() : Double {
+        return questions[currQuestionNumber].importance
+    }
+
     fun getNumberOfCurrentQuestion() : Int {
         return currQuestionNumber
     }
@@ -103,6 +111,7 @@ class SurveyViewModel : ViewModel() {
             }
             else {
                 questions[currQuestionNumber].answers[i] = radioButtons[i].isChecked
+                Log.v("viewModel", radioButtons[i].text.toString() + radioButtons[i].isChecked)
             }
         }
 

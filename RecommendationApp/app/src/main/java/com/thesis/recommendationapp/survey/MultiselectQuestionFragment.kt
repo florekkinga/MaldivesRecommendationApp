@@ -88,19 +88,11 @@ class MultiselectQuestionFragment : Fragment() {
         setUpQuestion()
         setUpAnswers()
         setUpPrevAndNextButtons()
-        resetOptions()
-        resetRatingBar()
+        setUpRatingBar()
     }
 
-    private fun resetRatingBar() {
-        ratingBar.rating = 0F
-    }
-
-    private fun resetOptions() {
-        checkBoxes.forEach { c ->
-            c.isChecked = false
-        }
-        radioButtonGroup.clearCheck()
+    private fun setUpRatingBar() {
+        ratingBar.rating = viewModel.getCurrentImportance().toFloat()
     }
 
     private fun setUpPrevAndNextButtons() {
@@ -112,6 +104,7 @@ class MultiselectQuestionFragment : Fragment() {
 
     private fun setUpAnswers() {
         val options = viewModel.getCurrentOptions()
+        val answers = viewModel.getCurrentAnswers()
         val buttonType = viewModel.getTypeOfButtonForOptions()
         val numberOfOptions = options.size
 
@@ -121,6 +114,7 @@ class MultiselectQuestionFragment : Fragment() {
             checkBoxes.forEachIndexed { i, element ->
                 if(i < numberOfOptions) {
                     element.text = options[i]
+                    element.isChecked = answers[i]
                 }
                 else {
                     element.visibility = View.GONE
@@ -130,15 +124,18 @@ class MultiselectQuestionFragment : Fragment() {
         else {
             checkBoxes.forEach{ c -> c.visibility = View.GONE }
             radioButtonGroup.visibility = View.VISIBLE
+            radioButtonGroup.clearCheck()
             radioButtons.forEach{ c -> c.visibility = View.VISIBLE }
             radioButtons.forEachIndexed { i, element ->
                 if(i < numberOfOptions) {
                     element.text = options[i]
+                    Log.v("radioB", answers[i].toString())
+                    element.isChecked = answers[i]
+                    Log.v("radioB", element.text.toString() + element.isChecked.toString())
                 }
                 else {
                     element.visibility = View.GONE
                 }
-                Log.v("radioB", element.text.toString())
             }
         }
 

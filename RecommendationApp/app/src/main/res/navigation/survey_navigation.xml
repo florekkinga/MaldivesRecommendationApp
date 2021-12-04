@@ -17,6 +17,6 @@
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.thesis.recommendationapp.survey.ResultFragment"
-        android:label="Result"
+        android:label="Recommendation"
         tools:layout="@layout/fragment_result" />
 </navigation>
