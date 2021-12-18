@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.thesis.recommendationapp.R
-import com.thesis.recommendationapp.SurveyActivity
+import com.thesis.recommendationapp.survey.SurveyActivity
 import com.thesis.recommendationapp.similarity.SelectResort
 
 class NewRecommendationFragment : Fragment() {

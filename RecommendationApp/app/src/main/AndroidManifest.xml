@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RecommendationApp">
         <activity
-            android:name=".ResortDetailsActivity"
+            android:name=".resorts.ResortDetailsActivity"
             android:label="Resort details"
             />
         <activity
@@ -22,7 +22,7 @@
         <activity android:name=".similarity.SimilarityResult"
             android:label="Similar resorts" />
 
-        <activity android:name=".SurveyActivity" />
+        <activity android:name=".survey.SurveyActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

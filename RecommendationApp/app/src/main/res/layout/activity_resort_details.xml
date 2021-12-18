@@ -19,7 +19,7 @@ tools:context=".recommendation.NewRecommendationFragment">
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
-        tools:context=".ResortDetailsActivity">
+        tools:context=".resorts.ResortDetailsActivity">
 
         <TextView
             android:id="@+id/resortName"

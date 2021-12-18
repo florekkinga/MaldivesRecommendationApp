@@ -12,8 +12,8 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.thesis.recommendationapp.R
-import com.thesis.recommendationapp.survey.ResortDetails
-import com.thesis.recommendationapp.survey.ResortListAdapter
+import com.thesis.recommendationapp.resorts.ResortDetails
+import com.thesis.recommendationapp.resorts.ResortListAdapter
 import org.json.JSONObject
 
 class SimilarityResult : AppCompatActivity() {
