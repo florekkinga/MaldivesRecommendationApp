@@ -1,4 +1,4 @@
-package com.thesis.recommendationapp.resorts
+package com.thesis.recommendationapp.survey
 
 import android.content.Context
 import android.os.Bundle
@@ -17,7 +17,8 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.thesis.recommendationapp.R
-import com.thesis.recommendationapp.survey.SurveyViewModel
+import com.thesis.recommendationapp.resorts.ResortDetails
+import com.thesis.recommendationapp.resorts.ResortListAdapter
 import org.json.JSONObject
 
 class ResultFragment : Fragment() {
