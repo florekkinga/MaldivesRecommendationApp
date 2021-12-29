@@ -28,33 +28,48 @@ public class RecommendationEngine {
     }
 
     public Map<String, Resort> getSimilarityRecommendation(String name) {
-        String query = "MATCH (r:Resort {name: \"" + name + "\"})-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(t)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(other:Resort)\n" +
-                "WITH r, other, COUNT(t) AS intersection, COLLECT(t.type) AS i\n" +
-                "MATCH (r)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(m1)\n" +
-                "WITH r, other, intersection, i, COLLECT(m1.type) AS s1\n" +
-                "MATCH (other)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(m2)\n" +
-                "WITH r, other, intersection, i, s1, COLLECT(m2.type) AS s2\n" +
-                "WITH r, other, intersection, i, s1, s2\n" +
-                "WITH r, other, intersection, s1+[x IN s2 WHERE NOT x IN s1] AS union, s1, s2\n" +
-                "WITH other, ((1.0*intersection)/SIZE(union)) AS jaccard_score \n" +
-                "WITH COLLECT({resort: other, score: jaccard_score}) as resorts\n" +
+
+        String query = "MATCH (r:Resort {name: \"" + name + "\"})--(t)--(o:Resort)\n" +
+                "WITH r, o, COUNT(t) AS intersection\n" +
                 "\n" +
-                "MATCH (r:Resort {name: \"" + name + "\"})-[:WATER_SPORTS|FITNESS]-(t)-[:WATER_SPORTS|FITNESS]-(other:Resort)\n" +
-                "WITH resorts, r, other, COUNT(t) AS intersection, COLLECT(t.name) AS i\n" +
-                "MATCH (r)-[:WATER_SPORTS|FITNESS]-(m1)\n" +
-                "WITH resorts, r, other, intersection, i, COLLECT(m1.type) AS s1\n" +
-                "MATCH (other)-[:WATER_SPORTS|FITNESS]-(m2)\n" +
-                "WITH resorts, r, other, intersection, i, s1, COLLECT(m2.name) AS s2\n" +
-                "WITH resorts, r, other, intersection, i, s1, s2\n" +
-                "WITH resorts, r, other, intersection, s1+[x IN s2 WHERE NOT x IN s1] AS union, s1, s2\n" +
-                "WITH resorts, other, ((1.0*intersection)/SIZE(union)) AS jaccard_score \n" +
-                "WITH resorts + COLLECT({resort: other, score: jaccard_score}) as resorts\n" +
+                "MATCH (r)--(node1)\n" +
+                "WITH o, intersection, COLLECT(ID(node1)) AS set1\n" +
+                "MATCH (o)--(node2)\n" +
+                "WITH o, intersection, set1, COLLECT(ID(node2)) AS set2\n" +
+                "WITH o, intersection, set1, set2\n" +
+                "WITH o, intersection, set1 + [x IN set2 WHERE NOT x IN set1] AS union\n" +
+                "WITH o, ((1.0*intersection)/SIZE(union)) AS jaccard_score\n" +
                 "\n" +
-                "MATCH (r:Resort {name: \"" + name + "\"})--(s:StarRating)--(other:Resort)\n" +
-                "WITH resorts + COLLECT({resort: other, score: 1}) as resorts\n" +
-                "\n" +
-                "UNWIND resorts as resort\n" +
-                "RETURN resort.resort as other, sum(resort.score) / 3 as jaccard_score ORDER BY jaccard_score DESC;";
+                "RETURN o AS other, jaccard_score \n" +
+                "ORDER BY jaccard_score DESC";
+
+//        String query = "MATCH (r:Resort {name: \"" + name + "\"})-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(t)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(other:Resort)\n" +
+//                "WITH r, other, COUNT(t) AS intersection, COLLECT(t.type) AS i\n" +
+//                "MATCH (r)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(m1)\n" +
+//                "WITH r, other, intersection, i, COLLECT(m1.type) AS s1\n" +
+//                "MATCH (other)-[:ACCOMMODATION|TRANSFER|WINE_AND_DINE]-(m2)\n" +
+//                "WITH r, other, intersection, i, s1, COLLECT(m2.type) AS s2\n" +
+//                "WITH r, other, intersection, i, s1, s2\n" +
+//                "WITH r, other, intersection, s1+[x IN s2 WHERE NOT x IN s1] AS union, s1, s2\n" +
+//                "WITH other, ((1.0*intersection)/SIZE(union)) AS jaccard_score \n" +
+//                "WITH COLLECT({resort: other, score: jaccard_score}) as resorts\n" +
+//                "\n" +
+//                "MATCH (r:Resort {name: \"" + name + "\"})-[:WATER_SPORTS|FITNESS]-(t)-[:WATER_SPORTS|FITNESS]-(other:Resort)\n" +
+//                "WITH resorts, r, other, COUNT(t) AS intersection, COLLECT(t.name) AS i\n" +
+//                "MATCH (r)-[:WATER_SPORTS|FITNESS]-(m1)\n" +
+//                "WITH resorts, r, other, intersection, i, COLLECT(m1.type) AS s1\n" +
+//                "MATCH (other)-[:WATER_SPORTS|FITNESS]-(m2)\n" +
+//                "WITH resorts, r, other, intersection, i, s1, COLLECT(m2.name) AS s2\n" +
+//                "WITH resorts, r, other, intersection, i, s1, s2\n" +
+//                "WITH resorts, r, other, intersection, s1+[x IN s2 WHERE NOT x IN s1] AS union, s1, s2\n" +
+//                "WITH resorts, other, ((1.0*intersection)/SIZE(union)) AS jaccard_score \n" +
+//                "WITH resorts + COLLECT({resort: other, score: jaccard_score}) as resorts\n" +
+//                "\n" +
+//                "MATCH (r:Resort {name: \"" + name + "\"})--(s:StarRating)--(other:Resort)\n" +
+//                "WITH resorts + COLLECT({resort: other, score: 1}) as resorts\n" +
+//                "\n" +
+//                "UNWIND resorts as resort\n" +
+//                "RETURN resort.resort as other, sum(resort.score) / 3 as jaccard_score ORDER BY jaccard_score DESC;";
         System.out.println(query);
         return repository.similarityRecommendation(query);
     }
@@ -114,7 +129,7 @@ public class RecommendationEngine {
             empty = false;
             query += String.format(
                     "MATCH (r:Resort)-[t:TRANSFER]-(:Transfer)\n" +
-                            "WHERE t.time < %s\n" +
+                            "WHERE t.time <= %s\n" +
                             "WITH DISTINCT r as r, resorts, %s as c\n" +
                             "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
                     transferTime, transferTimeImportance);
@@ -123,7 +138,7 @@ public class RecommendationEngine {
             empty = false;
             query += String.format(
                     "MATCH (r:Resort)-[t:TRANSFER]-(:Transfer)\n" +
-                            "WHERE t.price < %s\n" +
+                            "WHERE t.price <= %s\n" +
                             "WITH DISTINCT r as r, resorts, %s as c\n" +
                             "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
                     transferPrice, transferPriceImportance);
@@ -141,7 +156,7 @@ public class RecommendationEngine {
             empty = false;
             query += String.format(
                     "MATCH (r:Resort)-[a:ACCOMMODATION]-(:Accommodation)\n" +
-                            "WHERE a.halfBoard < %s OR a.fullBoard < %s OR a.allInclusive < %s\n" +
+                            "WHERE a.halfBoard <= %s OR a.fullBoard <= %s OR a.allInclusive <= %s\n" +
                             "WITH DISTINCT r as r, resorts, %s as c\n" +
                             "WITH resorts + COLLECT({name: r, score: c}) as resorts\n",
                     accommodationPrice, accommodationPrice, accommodationPrice, accommodationPriceImportance);
